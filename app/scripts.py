@@ -3,7 +3,29 @@ import json
 import requests
 import feedparser
 import re
+import ast
 from pytrends.request import TrendReq
+from datetime import datetime, timedelta
+
+
+def decode_response(response):
+    
+    """
+    Decode response from API and convert it
+    to the json
+    """
+
+    response = response.decode('unicode-escape').encode().decode('utf8')
+
+    response = re.sub(r'("[\s\w]*)"([\s\w]*)"([\s\w]*")',  r'\1\2\3', response)
+
+    response = re.sub('[\n]', '', response)
+
+    response = response[5:]
+
+    response = json.loads(response)
+
+    return response
 
 
 def get_trends(country):
@@ -13,9 +35,30 @@ def get_trends(country):
     Google Trends API and save them as a dataframe
     """
 
-    pytrend = TrendReq(timeout=(10,25))
-    trends = pytrend.trending_searches(pn=country)
-    trends.columns=['Topics']
+    trends = []
+    date_list = []
+
+    for i in range(0,7):
+        date = datetime.now() - timedelta(days=i)
+        date = date.strftime('%Y%m%d')
+        date_list.append(date)
+
+    for date in date_list:
+
+        print(date)
+
+        response = requests.get(f'https://trends.google.com/trends/api/dailytrends?ed={date}&geo={country}')
+
+        try:
+            cleared_data = decode_response(response.content)
+        except ValueError:
+            print(f'Something wrong with JSON for date {date}')
+            continue
+
+        for item in  cleared_data['default']['trendingSearchesDays'][0]['trendingSearches']:
+            trends.append(item['title']['query'])
+
+    print(trends)
 
     return trends
 
@@ -64,7 +107,7 @@ def fetch_top_news(country, source):
     top_news = []
 
     for article in articles:
-        for trend in trends['Topics']:
+        for trend in trends:
             if trend.lower() in article['title'].lower():
                 print(trend)
                 print(f'{article["title"]}\n\n')
@@ -72,4 +115,5 @@ def fetch_top_news(country, source):
                 break
     
     return top_news
-            
+
+

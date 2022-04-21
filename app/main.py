@@ -8,7 +8,7 @@ NEWS = []
 
 def update_news():
     global NEWS 
-    NEWS = fetch_top_news('ukraine', 'https://www.segodnya.ua/xml/rss')
+    NEWS = fetch_top_news('UA', 'https://www.segodnya.ua/xml/rss')
     print(NEWS)
 
 sched = BackgroundScheduler(daemon=True)
