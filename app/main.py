@@ -18,7 +18,7 @@ sched.start()
 @main.route('/')
 @main.route('/news')
 def show_news():
-    return  render_template('news.html', headings=['News', 'Summary', 'Text', 'Publication Date'], data=NEWS)
+    return  render_template('news.html', headings=['Trends', 'News', 'Summary', 'Text', 'Publication Date'], data=NEWS)
 
 
 

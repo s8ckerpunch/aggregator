@@ -12,6 +12,7 @@
         <tbody>
             {% for news in data %}
             <tr>
+                <td>{{ news['trend'] }}</td>
                 <td><a href="{{ news['link'] }}" style="text-decoration: none">{{ news['title'] }}</a></td>
                 <td>{{ news['summary'] }}</td>
                 <td>{{ news['text'] }}</td>

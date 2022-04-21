@@ -110,6 +110,7 @@ def fetch_top_news(country, source):
         for trend in trends:
             if trend.lower() in article['title'].lower():
                 print(trend)
+                article['trend'] = trend
                 print(f'{article["title"]}\n\n')
                 top_news.append(article)
                 break
